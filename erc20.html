@@ -20,15 +20,15 @@
     }
     .nav-back { display: inline-flex; align-items: center; gap: 6px; color: #94a3b8; text-decoration: none; font-size: 13px; font-weight: 600; margin-bottom: 18px; }
     .header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
-    .token-logo-svg { width: 72px; height: 72px; flex-shrink: 0; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); border-radius: 50%; }
+    .token-logo-img { width: 72px; height: 72px; flex-shrink: 0; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5)); border-radius: 50%; object-fit: contain; }
     .header h1 { font-size: 24px; font-weight: 800; line-height: 1.2; }
     .badge-network { display: inline-flex; align-items: center; gap: 5px; margin-top: 5px; background: rgba(98, 126, 234, 0.2); border: 1px solid #627EEA; color: #9bb1ff; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 16px; }
     .price-box { background: rgba(5, 15, 23, 0.9); border: 1px solid rgba(38, 161, 123, 0.3); border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
     .price-val { font-size: 22px; font-weight: 800; color: #4ade80; font-family: 'JetBrains Mono', monospace; }
     .meta-box { background: rgba(5, 15, 23, 0.6); border-radius: 12px; padding: 14px; margin-bottom: 18px; font-size: 13px; border: 1px solid rgba(255,255,255,0.08); }
-    .meta-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.05); gap: 8px; }
     .meta-row:last-child { border-bottom: none; }
-    .meta-val { font-family: 'JetBrains Mono', monospace; color: #e2e8f0; font-size: 12px; }
+    .meta-val { font-family: 'JetBrains Mono', monospace; color: #e2e8f0; font-size: 11px; word-break: break-all; text-align: right; }
     .btn-action { width: 100%; padding: 15px; background: linear-gradient(135deg, #26A17B, #177054); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 8px 20px rgba(38, 161, 123, 0.4); }
     .btn-copy-bar { width: 100%; margin-top: 10px; padding: 11px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
     .status-msg { margin-top: 16px; padding: 12px; border-radius: 10px; background: #04090d; font-size: 12px; font-family: 'JetBrains Mono', monospace; color: #94a3b8; border: 1px solid rgba(38, 161, 123, 0.25); line-height: 1.5; }
@@ -53,15 +53,8 @@
   <div class="card">
     <a href="index.html" class="nav-back">&larr; Главный портал (Все сети)</a>
     <div class="header">
-      <!-- 1:1 Точная каноническая копия официального логотипа Tether USDT -->
-      <svg class="token-logo-svg" viewBox="0 0 512 512" width="72" height="72">
-        <circle cx="256" cy="256" r="256" fill="#26A17B"/>
-        <g fill="#FFFFFF">
-          <rect x="156" y="165" width="200" height="42" rx="4"/>
-          <rect x="235" y="165" width="42" height="185" rx="4"/>
-          <path d="M 148 245 C 148 215 196 195 256 195 C 316 195 364 215 364 245 C 364 275 316 295 256 295 C 196 295 148 275 148 245 Z" fill="none" stroke="#FFFFFF" stroke-width="26"/>
-        </g>
-      </svg>
+      <!-- Оригинальный канонический логотип Tether USDT из Trust Wallet Assets -->
+      <img class="token-logo-img" src="https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png" alt="Tether USD" />
       <div>
         <h1>Tether USD</h1>
         <div class="badge-network">Ethereum / Sepolia (ERC-20)</div>
