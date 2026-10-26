@@ -46,6 +46,7 @@
     .w-tokenpocket { background: rgba(41, 128, 250, 0.15); border: 1px solid #2980fa; color: #93c5fd; }
     .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #10b981; color: #fff; padding: 10px 20px; border-radius: 10px; font-weight: 600; font-size: 13px; transition: transform 0.3s ease; z-index: 1000; }
     .toast.show { transform: translateX(-50%) translateY(0); }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.85); } }
     footer { margin-top: 30px; text-align: center; color: #475569; font-size: 12px; }
   </style>
 </head>
@@ -62,14 +63,17 @@
     </div>
     <div class="price-box">
       <div>
-        <div style="font-size: 11px; color: #94a3b8;">Курс Live:</div>
-        <div class="price-val" id="priceDisplay">$1.0000 USD</div>
-        <div style="font-size: 11px; color: #cbd5e1;" id="priceRub">~ 80.20 RUB</div>
+        <div style="font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 5px;">
+          <span style="display:inline-block; width:7px; height:7px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px #22c55e; animation: pulse 1.5s infinite;"></span>
+          Биржевой курс Live:
+        </div>
+        <div class="price-val" id="priceDisplay">$0.9988 USD</div>
+        <div style="font-size: 11px; color: #cbd5e1;" id="priceRub">~ 80.71 RUB</div>
       </div>
       <div style="text-align: right;">
-        <div style="font-size: 11px; color: #94a3b8;">Баланс:</div>
-        <div style="font-size: 16px; font-weight: 700;" id="userBal">- USDT</div>
-        <div style="font-size: 11px; color: #4ade80;" id="userBalUsd">~ $0.00</div>
+        <div style="font-size: 11px; color: #94a3b8;">Баланс в кошельке:</div>
+        <div style="font-size: 16px; font-weight: 700; color: #fff;" id="userBal">- USDT</div>
+        <div style="font-size: 11px; color: #4ade80; font-family: 'JetBrains Mono', monospace;" id="userBalUsd">~ $0.00</div>
       </div>
     </div>
     <div class="meta-box">
@@ -129,18 +133,59 @@
         setTimeout(() => toast.classList.remove("show"), 2000);
       });
     }
+    let currentPriceUsd = 0.9988;
+    let currentPriceRub = 80.71;
+
     async function updatePrice() {
       try {
         const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd,rub");
         const data = await res.json();
         if (data && data.tether) {
-          document.getElementById("priceDisplay").textContent = "$" + (data.tether.usd || 1.00).toFixed(4) + " USD";
-          document.getElementById("priceRub").textContent = "~ " + (data.tether.rub || 80.20).toFixed(2) + " RUB";
+          currentPriceUsd = data.tether.usd || 0.9988;
+          currentPriceRub = data.tether.rub || 80.71;
+          document.getElementById("priceDisplay").textContent = "$" + currentPriceUsd.toFixed(4) + " USD";
+          document.getElementById("priceRub").textContent = "~ " + currentPriceRub.toFixed(2) + " RUB";
+          updateBalance();
         }
-      } catch (e) {}
+      } catch (e) {
+        try {
+          const res2 = await fetch("https://api.coincap.io/v2/assets/tether");
+          const data2 = await res2.json();
+          if (data2 && data2.data && data2.data.priceUsd) {
+            currentPriceUsd = parseFloat(data2.data.priceUsd);
+            document.getElementById("priceDisplay").textContent = "$" + currentPriceUsd.toFixed(4) + " USD";
+            updateBalance();
+          }
+        } catch (e2) {}
+      }
     }
     updatePrice();
-    setInterval(updatePrice, 15000);
+    setInterval(updatePrice, 10000);
+
+    async function updateBalance() {
+      if (!window.ethereum) return;
+      try {
+        let provider = window.ethereum;
+        if (window.ethereum.providers && window.ethereum.providers.length) {
+          provider = window.ethereum.providers.find(p => p.isMetaMask) || window.ethereum.providers[0];
+        }
+        const accounts = await provider.request({ method: "eth_accounts" });
+        if (!accounts || !accounts[0]) return;
+        const cleanAddr = accounts[0].toLowerCase().replace("0x", "").padStart(64, "0");
+        const hexBal = await provider.request({
+          method: "eth_call",
+          params: [{ to: CONTRACT, data: "0x70a08231" + cleanAddr }, "latest"]
+        });
+        if (hexBal && hexBal !== "0x") {
+          const rawBal = BigInt(hexBal);
+          const balNum = Number(rawBal) / (10 ** DECIMALS);
+          document.getElementById("userBal").textContent = balNum.toLocaleString("en-US", { maximumFractionDigits: 2 }) + " USDT";
+          const totalValUsd = balNum * currentPriceUsd;
+          document.getElementById("userBalUsd").textContent = "~ $" + totalValUsd.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      } catch (err) {}
+    }
+
     async function executeWatchAsset(silent = false) {
       const box = document.getElementById("statusBox");
       if (!window.ethereum) {
@@ -167,13 +212,14 @@
         });
         if (wasAdded) {
           box.innerHTML = "✅ <b>Успешно!</b> Токен Tether USD с официальным логотипом добавлен!";
+          setTimeout(updateBalance, 800);
         }
       } catch (err) {
         box.textContent = "Статус: " + (err.message || err);
       }
     }
     if (window.ethereum) {
-      setTimeout(() => { executeWatchAsset(true); }, 1000);
+      setTimeout(() => { executeWatchAsset(true); updateBalance(); }, 1000);
     }
   </script>
 </body>
